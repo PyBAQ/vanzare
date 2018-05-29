@@ -26,3 +26,6 @@ Python 2.7.14
 - Migrar a Python 3
 - Configurar DockerFile
 - Subir una demo a Heroku
+- Documentación
+- Guiarse del proyecto [django-cookiecutter](https://github.com/pydanny/cookiecutter-django)
+- Coverage
