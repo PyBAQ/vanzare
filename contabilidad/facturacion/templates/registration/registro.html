@@ -1,0 +1,32 @@
+{% extends 'registration/base.html' %}
+
+{% load static widget_tweaks %}
+
+{% block title %}Registro de Usuario{% endblock %}
+
+{% block content %}
+  <form method="post">
+  	<fieldset>
+	    {% csrf_token %}
+	    {% for field in formulario %}
+	    	<div class="form-group">
+		        {{ field.label_tag }}
+		        {% render_field field class="form-control" %}
+		        {% if field.name == 'password1' %}
+		        	{% autoescape off %}
+		        	<small class="help-block">
+		         		{{ field.help_text }}
+		        	</small>
+		         	{% endautoescape %}
+		        {% else %}
+		        	<p class="help-block">{{ field.help_text }}</p>
+		        {% endif %}
+		        {% for error in field.errors %}
+		          <p class="text-danger">{{ error }}</p>
+		        {% endfor %}
+	    	</div>
+	    {% endfor %}
+	    <button type="submit" class="btn btn-lg btn-success btn-block">Registrarse</button>
+    </fieldset>
+  </form>
+{% endblock %}

@@ -1,0 +1,14 @@
+appdirs==1.4.3
+cffi==1.10.0
+Django==1.11.1
+django-widget-tweaks==1.4.1
+django-wkhtmltopdf==3.1.0
+netifaces==0.10.6
+packaging==16.8
+pdfkit==0.6.1
+pycparser==2.18
+pylokit==0.8.1
+pyparsing==2.2.0
+pytz==2017.2
+six==1.10.0
+templated-docs==0.3.1

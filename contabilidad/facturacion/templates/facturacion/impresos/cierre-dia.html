@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static humanize %}
+<head>
+    <title>Fatura</title>
+    <link href="{% static 'facturacion/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'facturacion/dist/css/factura.css' %}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="receipt-main col-xs-10 col-sm-10 col-md-6 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+            <div class="row">
+                <div class="receipt-header">
+                    <div class="col-xs-6 col-sm-6 col-md-6">
+                        <div class="receipt-left">
+                            <img class="img-responsive" alt="iamgurdeeposahan" src="{% static 'facturacion/img/logo_nave.png' %}" style="width: 130px;">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                        <div class="receipt-right">
+                            <h5>Example Company</h5>
+                            <p>ID: 12345 <i class="fa fa-phone"></i></p>
+                            <p>Régimen Simplificado</p>
+                            <p>Example Avenue Boulevard St 4567 * tel. 3555555</p>
+                            <p>company@example.com <i class="fa fa-envelope-o"></i></p>
+                            <p>Barranquilla <i class="fa fa-location-arrow"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="receipt-header receipt-header-mid">
+                    <div class="col-xs-8 col-sm-8 col-md-8 text-left">
+                        <div class="receipt-right">
+                            <h5>Cierre día: <small>   {{ dia }}/{{ mes }}/{{ anio }} </small></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Efectivo</th>
+                            <th>Crédito</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recibido in recibidos %}
+                        <tr>
+                            <td class="col-md-2">{{ recibido.id }}</td>
+                            <td class="col-md-3">${{ recibido.abono|intcomma }}</td>
+                            <td class="col-md-3">${{ recibido.saldo|intcomma }}</td>
+                            <td class="col-md-1" style="text-align: center"> ${{ recibido.subtotal|intcomma }} </td>
+                        </tr>
+                        {% endfor %}
+                        {% for recaudo in recaudos %}
+                        <tr>
+                            <td class="col-md-4">Recaudo Fact {{ recaudo.recibido.id }}</td>
+                            <td class="col-md-1"></td>
+                            <td class="col-md-1"></td>
+                            <td class="col-md-1" style="text-align: center"> ${{ recaudo.valor|intcomma }} </td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>   </td>
+                            <td>   </td>
+                            <td class="text-right">
+                                <p>
+                                    <strong>Total Efectivo: </strong>
+                                </p>
+                            </td>
+                            <td class="text-center">
+                                <p>
+                                    <strong>${{ total_efectivo|intcomma }} </strong>
+                                </p>
+                            </td>
+                        </tr>
+                        {% for gasto in gastos %}
+                        <td class="col-md-2">{{ gasto.elemento_gasto.nombre }}</td>
+                        <td class="col-md-3"></td>
+                        <td class="col-md-3"></td>
+                        <td class="col-md-1">${{ gasto.valor|intcomma }}</td>
+                        {% endfor %}
+                        <tr>
+                            <td>   </td>
+                            <td>   </td>
+                            <td class="text-right">
+                                <p>
+                                    <strong>Gastos: </strong>
+                                </p>
+                            </td>
+                            <td class="text-center">
+                                <p>
+                                    <strong>${{ total_gastos|intcomma }} </strong>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>   </td>
+                            <td>   </td>
+                            <td class="text-right col-md-6"><h4><strong>Saldo efectivo: </strong></h4></td>
+                            <td class="text-center text-danger"><h4><strong>${{ saldo_efectivo|intcomma }}</strong></h4></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

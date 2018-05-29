@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static humanize %}
+<head>
+    <title>Fatura</title>
+    <link href="{% static 'facturacion/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'facturacion/dist/css/factura.css' %}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="receipt-main col-xs-10 col-sm-10 col-md-6 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+            <div class="row">
+                <div class="receipt-header">
+                    <div class="col-xs-6 col-sm-6 col-md-6">
+                        <div class="receipt-left">
+                            <img class="img-responsive" alt="iamgurdeeposahan" src="{% static 'facturacion/img/logo_nave.png' %}" style="width: 71px;">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                        <div class="receipt-right">
+                            <h5>Example Company</h5>
+                            <p>ID: 12345 <i class="fa fa-phone"></i></p>
+                            <p>Régimen Simplificado</p>
+                            <p>Example Avenue Boulevard St 4567 * tel. 3555555</p>
+                            <p>company@example.com <i class="fa fa-envelope-o"></i></p>
+                            <p>Barranquilla <i class="fa fa-location-arrow"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="receipt-header receipt-header-mid">
+                    <div class="col-xs-8 col-sm-8 col-md-8 text-left">
+                        <div class="receipt-right">
+                            <h5>Cierre de mes: <small>   {{ mes }}/{{ anio }} </small></h5>
+                            <h5>Gastos: <small> ${{ total_gastos|intcomma }} </small> </h5> 
+                            <h5>Recibos de caja :<small> ${{ recibos_de_caja|intcomma }} </small></h5> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Efectivo</th>
+                            <th>Crédito</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recibido in recibidos %}
+                        <tr>   
+                            <td class="col-md-9">${{ recibido.abono|intcomma }}</td>
+                            <td class="col-md-9">${{ recibido.saldo|intcomma }}</td>
+                            <td class="col-md-1" style="text-align: center"> ${{ recibido.subtotal|intcomma }} </td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>   </td>
+                            <td class="text-right">
+                                <p>
+                                    <strong>Recibos de caja: </strong>
+                                </p>
+                            </td>
+                            <td class="text-center">
+                                <p>
+                                    <strong>${{ recibos_de_caja|intcomma }} </strong>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>   </td>
+                            <td class="text-right">
+                                <p>
+                                    <strong>Gastos: </strong>
+                                </p>
+                            </td>
+                            <td class="text-center">
+                                <p>
+                                    <strong>${{ total_gastos|intcomma }} </strong>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <!-- <tr>
+                            <td>   </td>
+                            <td class="text-right"><h4><strong>Total: </strong></h4></td>
+                            <td class="text-center text-danger"><h4><strong>${{ recibos_de_caja|intcomma }}</strong></h4></td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>    
+    </div>
+</div>
+</body>
+</html>

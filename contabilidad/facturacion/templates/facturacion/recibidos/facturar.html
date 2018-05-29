@@ -1,0 +1,150 @@
+{% extends "facturacion/base.html" %}
+
+{% load static widget_tweaks l10n %}
+
+{% block title %}Facturar Recibidos{% endblock %}
+
+{% block content %}
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Formulario de elementos
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                	<form role="form" action="" method="post">
+					    {% csrf_token %}
+                        {{ formset.management_form }}
+
+                        {% for form in formset %}
+                                <div class='table'>
+                                    <table class='no_error'>
+                                        {{ form.non_field_errors }}
+                                        <div class="fieldWrapper form-group productos_base">
+                                            {{ form.producto_base.errors }}
+                                            <label for="{{ form.producto_base.id_for_label }}">Producto base:</label>
+                                            <select name="producto_set-0-producto_base" id="id_producto_set-0-producto_base" class="select-productos_base form-control">
+                                                <option value="" selected="">---------</option>
+                                                {% for producto in productos %}
+                                                    <option value="{{ producto.id }}" data-valor="{{ producto.valor }}" data-valor_cantidad="{{ producto.valor_cantidad }}" data-factor="{{ producto.factor|unlocalize }}" data-opciones_cobro="{{ producto.opciones_cobro }}">{{ producto.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="fieldWrapper form-group cantidad">
+                                            {{ form.cantidad.errors }}
+                                            <label for="{{ form.cantidad.id_for_label }}">Cantidad:</label>
+                                            {% render_field form.cantidad class="cantidad form-control" %}
+                                        </div>
+                                        <div class="fieldWrapper form-group">
+                                            {{ form.detalle.errors }}
+                                            <label for="{{ form.detalle.id_for_label }}">Detalle:</label>
+                                            {% render_field form.detalle class="form-control" %}
+                                        </div>
+                                        <div class="fieldWrapper form-group ancho hidden">
+                                            {{ form.ancho.errors }}
+                                            <label for="{{ form.ancho.id_for_label }}">Ancho:</label>
+                                            {% render_field form.ancho class="ancho form-control" %}
+                                        </div>
+                                        <div class="fieldWrapper form-group alto hidden">
+                                            {{ form.alto.errors }}
+                                            <label for="{{ form.alto.id_for_label }}">Alto:</label>
+                                            {% render_field form.alto class="alto form-control" %}
+                                        </div>
+                                        <div class="fieldWrapper form-group total">
+                                            {{ form.total.errors }}
+                                            <label for="{{ form.total.id_for_label }}">Total</label>
+                                            {% render_field form.total class="total form-control" readonly="readonly" %}
+                                        </div>
+                                    </table>
+                                </div>
+                        {% endfor %}
+                        <input type="button" value="Agregar más" id="add_more" class="btn btn-info" style="margin-bottom: 3em">
+
+                        {% for hidden in formulario.hidden_fields %}
+                          {{ hidden }}
+                        {% endfor %}
+
+                        {% for field in formulario.visible_fields %}
+                          <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field|add_class:'form-control' }}
+                            {% for error in field.errors %}
+                              <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                          </div>
+                        {% endfor %}
+					    <button type="submit" class="btn btn-primary" id="facturar">Enviar</button>
+					</form> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block extra_js %}
+<script src="{% static 'facturacion/js/clonemore.js' %}"></script>
+<script type="text/javascript">
+    $('#add_more').click(function() {
+        cloneMore('div.table:last', 'producto');
+    });
+
+    // mostrar al cliente el valor total de cada item
+    var es_estandar = null;
+    var valor = null;
+    var valor_cantidad = null;
+    var factor = null;
+    var alto = null;
+    var ancho = null;
+    var cantidad = null;
+    var total = null;
+    var producto = null;
+
+    $( ".select-productos_base" ).change(function() {
+        var id_producto = $(this).attr('id');
+        producto = $(this).find(":selected");        
+
+        if ( ( producto.data("opciones_cobro") == "por_docena") || ( producto.data("opciones_cobro") == "estandar" ) ){
+            es_estandar = 1;
+            valor = producto.data("valor");
+            valor_cantidad = producto.data("valor_cantidad");
+            $(this).parent().siblings(".ancho").addClass("hidden");
+            $(this).parent().siblings(".alto").addClass("hidden");
+        } else if ( producto.data("opciones_cobro") == "personalizado" ) {
+            es_estandar = 0;
+            factor = producto.data("factor");
+            $(this).parent().siblings(".ancho").removeClass("hidden");
+            $(this).parent().siblings(".alto").removeClass("hidden");
+        }
+    });
+
+    $( ".cantidad" ).change(function() {
+        if (es_estandar == 1) {
+            var id_input_cantidad = $(this).attr('id');
+            total = $(this).parent().siblings(".total").children(".total");
+            cantidad = $('#'+id_input_cantidad).val();
+
+            if ( ( valor_cantidad != 'None') && (cantidad > 1)) {
+                total.val( cantidad*valor_cantidad );
+            } else {
+                total.val( cantidad*valor );
+            }
+
+        }
+    });
+
+    $( ".alto" ).change(function() {
+        if (es_estandar == 0) {
+            var id_input_alto = $(this).attr('id');
+            total = $(this).parent().siblings(".total").children(".total");
+            alto = $('#'+id_input_alto).val();
+            ancho = $(this).parent().siblings(".ancho").children(".ancho").val();
+            cantidad = $(this).parent().siblings(".cantidad").children(".cantidad").val();
+            total.val(ancho*alto*cantidad*factor);
+        }
+    });
+
+</script>
+{% endblock extra_js %}

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static humanize %}
+<head>
+    <title>Fatura</title>
+    <link href="{% static 'facturacion/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'facturacion/dist/css/factura.css' %}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="receipt-main col-xs-10 col-sm-10 col-md-6 col-xs-offset-1 col-sm-offset-1 col-md-offset-3">
+            <div class="row">
+                <div class="receipt-header">
+                    <div class="col-xs-6 col-sm-6 col-md-6">
+                        <div class="receipt-left">
+                            <img class="img-responsive" alt="logo-nave-publicidad" src="{% static 'facturacion/img/logo_nave.png' %}" style="width: 130px;">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                        <div class="receipt-right">
+                            <h5>Example Company</h5>
+                            <p>ID: 12345 <i class="fa fa-phone"></i></p>
+                            <p>Régimen Simplificado</p>
+                            <p>Example Avenue Boulevard St 4567 * tel. 3555555</p>
+                            <p>company@example.com <i class="fa fa-envelope-o"></i></p>
+                            <p>Barranquilla <i class="fa fa-location-arrow"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="receipt-header receipt-header-mid">
+                    <div class="col-xs-8 col-sm-8 col-md-8 text-left">
+                        <div class="receipt-right">
+                            <h5>Recibo de Caja <small>  |   #{{ recaudo.pk }} </small></h5>
+                            <p><b>Tipo :</b> Contado</p>
+                            <p><b>Nombre de Cliente :</b> {{ recaudo.recibido.cliente }}</p>
+                            <p><b>Identificación :</b> {{ recaudo.recibido.cliente.tipo_identificacion }} {{ recaudo.recibido.cliente.numero_identificacion|intcomma }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th class="text-center">Vr. Unit</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in productos %}
+                        <tr>
+                            <td class="col-md-9"><em>{{ producto.producto_base }}</em></h4></td>
+                            <td class="col-md-9"><em>{{ producto.detalle }}</em></h4></td>
+                            <td class="col-md-1" style="text-align: center"> {{ producto.cantidad|intcomma }} </td>
+                            <td class="col-md-1 text-center">
+                                {% if producto.producto_base.valor_cantidad and producto.cantidad != 1 %}
+                                    ${{ producto.producto_base.valor_cantidad|intcomma }}
+                                {% else %}
+                                    ${{ producto.producto_base.valor|intcomma }}
+                                {% endif %}
+                            </td>
+                            <td class="col-md-1 text-center">${{ producto.total|intcomma }} </td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>   </td>
+                            <td>   </td>
+                            <td>   </td>
+                            <td class="text-right">
+                                <p>
+                                    <strong>Subtotal: </strong>
+                                </p>
+                                <p>
+                                    <strong>Abono: </strong>
+                                </p>
+                                <p>
+                                    <strong>Saldo: </strong>
+                                </p>
+                                <p>
+                                    <strong>Descuento: </strong>
+                                </p>
+                            </td>
+                            <td class="text-center">
+                                <p>
+                                    <strong>${{ recaudo.recibido.subtotal|intcomma }} </strong>
+                                </p>
+                                <p>
+                                    <strong>${{ recaudo.recibido.abono|intcomma }}</strong>
+                                </p>
+                                <p>
+                                    <strong>${{ recaudo.recibido.saldo|intcomma }}</strong>
+                                </p>
+                                <p>
+                                    <strong>{{ recaudo.recibido.descuento }}%</strong>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>   </td>
+                            <td>   </td>
+                            <td>   </td>
+                            <td class="text-right"><h4><strong>Total: </strong></h4></td>
+                            <td class="text-center text-danger"><h4><strong>${{ recaudo.recibido.total|intcomma }}</strong></h4></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="receipt-header receipt-header-mid receipt-footer">
+                    <div class="col-xs-8 col-sm-8 col-md-8 text-left">
+                        <div class="receipt-right">
+                            <p><b>Detalle :</b> Cancela factura #{{ recaudo.recibido.pk }} </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+    </div>
+</div>
+</body>
+</html>

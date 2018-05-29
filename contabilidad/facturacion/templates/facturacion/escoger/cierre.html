@@ -1,0 +1,150 @@
+{% extends "facturacion/base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'facturacion/css/clndr.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block title %}
+Cierres 
+{% if user.is_superuser %}de mes y de día{% else %}por día{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <h2>Cierre del día</h2>
+        <div class="cal1"></div>
+    </div>
+
+    {% if user.is_superuser %}
+    <div class="col-lg-3">
+        <h2>Cierre del mes</h2>
+            <fieldset>
+                <div class="form-group">
+                    <label for="meses">Escoge un mes</label>
+                    <select id="meses" class="form-control">
+                        <option value="00" >--------------</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="anios">Escoge un año</label>
+                    <select id="anios" class="form-control" disabled>
+                        <option value="0000" >--------------</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div>
+                <a id="ir-cierre-mes" class="btn btn-primary" disabled>Ver</a>
+            </fieldset>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'facturacion/js/moment.min.js' %}"></script>
+<script src="{% static 'facturacion/js/underscore-min.js' %}"></script>
+<script src="{% static 'facturacion/js/clndr.min.js' %}"></script>
+<script type="text/javascript">
+	$( "#meses" ).change(function() {
+	  var mes = $("#meses").val();
+	  $('#anios').removeAttr('disabled');
+	  
+	  $( "#anios" ).change(function() {
+		  var anios = $("#anios").val();
+		  $('#ir-cierre-mes').removeAttr('disabled');
+		  
+		  if (( mes != "00") && (anios != "0000")) {
+		  	$("#ir-cierre-mes").attr('href','cierres-mes/'+mes+'/'+anios+'/');
+		  }
+		});
+	});
+
+
+    // Call this from the developer console and you can control both instances
+    var calendars = {};
+
+    $(document).ready( function() {
+
+        // Assuming you've got the appropriate language files,
+        // clndr will respect whatever moment's language is set to.
+        // moment.locale('ru');
+
+        // Here's some magic to make sure the dates are happening this month.
+        var thisMonth = moment().format('YYYY-MM');
+        // Events to load into calendar
+        var eventArray = [
+            {
+                title: 'Multi-Day Event',
+                endDate: thisMonth + '-14',
+                startDate: thisMonth + '-10'
+            }, {
+                endDate: thisMonth + '-23',
+                startDate: thisMonth + '-21',
+                title: 'Another Multi-Day Event'
+            }, {
+                date: thisMonth + '-27',
+                title: 'Single Day Event'
+            }
+        ];
+
+        // The order of the click handlers is predictable. Direct click action
+        // callbacks come first: click, nextMonth, previousMonth, nextYear,
+        // previousYear, nextInterval, previousInterval, or today. Then
+        // onMonthChange (if the month changed), inIntervalChange if the interval
+        // has changed, and finally onYearChange (if the year changed).
+        calendars.clndr1 = $('.cal1').clndr({
+            events: eventArray,
+            clickEvents: {
+                click: function (target) {
+                    console.log('date: ', target.date._i);
+                    var url = 'http://'+window.location.host+'/cierre-dia-';
+                    var inputURL = target.date._i;
+                    window.location.href = url + inputURL;
+                }
+            },
+            multiDayEvents: {
+                singleDay: 'date',
+                endDate: 'endDate',
+                startDate: 'startDate'
+            },
+            showAdjacentMonths: true,
+            adjacentDaysChangeMonth: false
+        });
+
+
+
+        // Bind all clndrs to the left and right arrow keys
+        $(document).keydown( function(e) {
+            // Left arrow
+            if (e.keyCode == 37) {
+                calendars.clndr1.back();
+            }
+
+            // Right arrow
+            if (e.keyCode == 39) {
+                calendars.clndr1.forward();
+            }
+        });
+    });
+</script>
+{% endblock extra_js %}

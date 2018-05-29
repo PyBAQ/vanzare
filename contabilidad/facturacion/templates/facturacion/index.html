@@ -1,0 +1,85 @@
+{% extends "facturacion/base.html" %}
+
+{% load humanize %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Ventas del día
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Abono</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+					{% for recibido in recibidos %}
+						<tr>
+					        <td>{{ recibido.pk }}</td>
+					        <td>{{ recibido.cliente }}</td>
+					        <td>${{ recibido.abono|default_if_none:"0"|intcomma }}</td>
+					        <td>${{ recibido.total|default_if_none:"0"|intcomma }}</td>
+					    </tr>
+					{% endfor %}
+                    	<tr class="success">
+                    		<td>Total del día</td>
+                    		<td></td>
+                    		<td></td>
+                            <td>${{ total_recibidos|default_if_none:"0"|intcomma }}</td>
+                    	</tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Gastos del día
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Elemento</th>
+                            <th>Descripción</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+					{% for gasto in gastos %}
+						<tr>
+					        <td>{{ gasto.pk }}</td>
+					        <td>{{ gasto.elemento_gasto }}</td>
+					        <td>{{ gasto.elemento_gasto.descripcion }}</td>
+					        <td>${{ gasto.valor|default_if_none:"0"|intcomma }}</td>
+					    </tr>
+					{% endfor %}
+                    	<tr class="info">
+                    		<td>Total del día</td>
+                    		<td></td>
+                    		<td></td>
+                            <td>${{ total_gastos|default_if_none:"0"|intcomma }}</td>
+                    	</tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

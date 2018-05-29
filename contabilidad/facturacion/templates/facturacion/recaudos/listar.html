@@ -1,0 +1,73 @@
+{% extends "facturacion/base.html" %}
+
+{% load static humanize %}
+
+{% block extra_css %}
+<link href="{% static 'facturacion/vendor/datatables-plugins/dataTables.bootstrap.css' %}" rel="stylesheet">
+<link href="{% static 'facturacion/vendor/datatables-responsive/dataTables.responsive.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block title %}Recaudos{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Listado de Reacudos
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                    <thead>
+                        <tr>
+                            <th>Recibido #</th>
+                            <th>Cliente</th>
+                            <th>Valor</th>
+                            <th>Fecha</th>
+                            <th>Ver</th>
+                            <th>Imprimir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recaudo in recaudos %}
+                            <tr>
+                                <td>{{ recaudo.recibido.pk }}</td>
+                                <td>{{ recaudo.recibido.cliente }}</td>
+                                <td>${{ recaudo.valor|intcomma }}</td>
+                                <td>{{ recaudo.fecha|naturalday }}</td>
+                                <td>
+                                    <a href="{% url 'ver-impreso-recaudo' recaudo.pk %}"><button type="button" class="btn btn-success">Ver</button></a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'imprimir-recaudo' recaudo.pk %}"><button type="button" class="btn btn-success">Imprimir</button></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+
+{% block extra_js %}
+<script src="{% static 'facturacion/vendor/datatables/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'facturacion/vendor/datatables-plugins/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'facturacion/vendor/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script>
+$(document).ready(function() {
+    $('#dataTables-example').DataTable({
+        responsive: true,
+        "order": [[ 0, "desc" ]],
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.15/i18n/Spanish.json"
+        }
+    });
+});
+</script>
+{% endblock extra_js %}
