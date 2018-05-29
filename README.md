@@ -9,11 +9,12 @@
 [CLNDR.js ~ A jQuery Calendar Plugin](http://kylestetz.github.io/CLNDR/)
 
 
-**Versión de Django:**
+**Versiones de Django y Python:**
 1.11
+Python 2.7.14
 
 
-** To dos:**
+### To dos:
 
 - Dividir settings (base, prod y dev)
 - Ordenar views (pasar a class base views las necesarias)
@@ -22,3 +23,4 @@
 - Instalar django-debug-toolbar
 - Optimizar queries
 - Ordernar apps (dividir la logica para que 1 app haga solo 1 cosa)
+- Migrar a Python 3
