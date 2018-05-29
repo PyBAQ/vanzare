@@ -24,3 +24,5 @@ Python 2.7.14
 - Optimizar queries
 - Ordernar apps (dividir la logica para que 1 app haga solo 1 cosa)
 - Migrar a Python 3
+- Configurar DockerFile
+- Subir una demo a Heroku
