@@ -1,4 +1,4 @@
-# Proyecto Contabilidad
+# Vanzare: Software de Punto de Venta
 
 
 **Plantilla:**
