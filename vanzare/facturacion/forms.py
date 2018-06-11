@@ -25,8 +25,8 @@ class GastoForm(ModelForm):
 
 class ProductoForm(ModelForm):
     class Meta:
-		model = Producto
-		fields = ['producto_base','cantidad','detalle','ancho','alto','total']
+        model = Producto
+        fields = ['producto_base','cantidad','detalle','ancho','alto','total']
 
 
 ProductoFormSet = inlineformset_factory(Recibido, Producto, form=ProductoForm, can_delete=False, extra=0, min_num=1, max_num = None)

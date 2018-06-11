@@ -29,3 +29,6 @@ Python 2.7.14
 - Documentación
 - Guiarse del proyecto [django-cookiecutter](https://github.com/pydanny/cookiecutter-django)
 - Coverage
+
+
+
