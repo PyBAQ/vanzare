@@ -11,7 +11,7 @@
 
 **Versiones de Django y Python:**
 1.11
-Python 2.7.14
+Python 3.6
 
 
 ### To dos:
