@@ -107,3 +107,15 @@ media/*
 styles-min.css.map
 .sass-cache
 .DS_Store
+
+##
+.vscode/
+.vscode/
+Makefile
+local.py
+*.sqlite*
+*.code-workspace
+.idea/
+*.ignore
+*.sublime-*
+media/
