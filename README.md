@@ -14,6 +14,9 @@
 Python 3.6
 
 
+# Nota
+Despues de clonar el repo usar el siguiente comando `git submodule update --recursive`
+
 ### To dos:
 
 - Dividir settings (base, prod y dev)
