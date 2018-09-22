@@ -119,3 +119,7 @@ local.py
 *.ignore
 *.sublime-*
 media/
+
+## startbootstrap-sb-admin-2 src code
+node_modules/
+vendor/
