@@ -1,0 +1,3 @@
+[submodule "vanzare/facturacion/static/facturacion"]
+	path = vanzare/facturacion/static/facturacion
+	url = https://github.com/BlackrockDigital/startbootstrap-sb-admin-2.git

@@ -107,3 +107,19 @@ media/*
 styles-min.css.map
 .sass-cache
 .DS_Store
+
+##
+.vscode/
+.vscode/
+Makefile
+local.py
+*.sqlite*
+*.code-workspace
+.idea/
+*.ignore
+*.sublime-*
+media/
+
+## startbootstrap-sb-admin-2 src code
+node_modules/
+vendor/

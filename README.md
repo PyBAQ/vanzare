@@ -11,8 +11,11 @@
 
 **Versiones de Django y Python:**
 1.11
-Python 2.7.14
+Python 3.6
 
+
+# Nota
+Despues de clonar el repo usar el siguiente comando `git submodule update --recursive`
 
 ### To dos:
 
