@@ -1,3 +1,4 @@
+import netifaces
 """
 Django settings for contabilidad project.
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
+    'cliente'
 ]
 
 MIDDLEWARE = [
@@ -138,10 +140,10 @@ TEMPLATED_DOCS_LIBREOFFICE_PATH = '/usr/lib64/libreoffice/program/'
 
 LOGIN_REDIRECT_URL = 'index'
 
-import netifaces
 
 # Find out what the IP addresses are at run time
 # This is necessary because otherwise Gunicorn will reject the connections
+
 def ip_addresses():
     ip_list = []
     for interface in netifaces.interfaces():
@@ -151,10 +153,11 @@ def ip_addresses():
                 ip_list.append(addrs[x][0]['addr'])
     return ip_list
 
+
 # Discover our IP address
 ALLOWED_HOSTS = ip_addresses()
 
 try:
-  from local_settings import *
+    from local_settings import *  # noqa
 except ImportError:
-  pass
+    pass
