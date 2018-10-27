@@ -13,7 +13,8 @@ from django.contrib.auth import login, authenticate
 from django.urls import reverse
 
 from facturacion.forms import RecibidoForm, GastoForm, ProductoFormSet, RecaudoForm, ClienteForm, ProductoBaseForm, RegistroForm
-from facturacion.models import Recibido, Gasto, Producto, ProductoBase, Recaudo, Cliente
+from facturacion.models import Recibido, Gasto, Recaudo, Cliente
+from producto.models import Producto, ProductoBase
 
 from templated_docs import fill_template
 from templated_docs.http import FileResponse
