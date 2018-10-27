@@ -2,17 +2,12 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import Producto, ProductoBase, Cliente, Recibido, ElementoGasto, Gasto, Recaudo
-
+from .models import Cliente, Recibido, ElementoGasto, Gasto, Recaudo
+from producto.models import Producto
 
 class ProductoInLine(admin.StackedInline):
     model = Producto
     extra = 0
-
-
-class ProductoBaseAdmin(admin.ModelAdmin):
-    list_display = ('nombre','valor', 'valor_cantidad','factor', 'opciones_cobro', 'fecha','modificado')
-admin.site.register(ProductoBase, ProductoBaseAdmin)
 
 
 class ClienteAdmin(admin.ModelAdmin):

@@ -7,7 +7,8 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import Recibido, Gasto, Producto, Recaudo, Cliente, ProductoBase
+from .models import Recibido, Gasto, Recaudo, Cliente
+from producto.models import Producto, ProductoBase
 
 
 class RecibidoForm(ModelForm):
