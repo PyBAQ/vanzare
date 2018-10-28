@@ -25,5 +25,6 @@ urlpatterns = [
         name='password_reset_complete'),
     url(r'^', include('facturacion.urls')),
     url(r'^cliente', include('cliente.urls')),
+    url(r'^producto', include('producto.urls')),
     url(r'^admin/', admin.site.urls),
 ]

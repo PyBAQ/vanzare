@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import pdfkit
 from datetime import date
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect, HttpResponse
-from django.db.models import Sum
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
+from django.db.models import Sum
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 
-from facturacion.forms import (RecibidoForm, GastoForm, ProductoFormSet,
-                               RecaudoForm, ClienteForm, ProductoBaseForm,
+import pdfkit
+from cliente.models import Cliente, Recaudo, Recibido
+from facturacion.forms import (ClienteForm, GastoForm, ProductoBaseForm, ProductoFormSet, RecaudoForm, RecibidoForm,
                                RegistroForm)
-from facturacion.models import Gasto, Producto, ProductoBase
-from cliente.models import Recibido, Cliente, Recaudo
+from producto.models import Producto, ProductoBase
+
+from .models import Gasto
+
 today = date.today()
 
 
@@ -92,7 +94,8 @@ def recibidosFacturar(request):
                         else:
                             producto.total = producto.producto_base.valor * producto.cantidad
                     elif producto.producto_base.opciones_cobro == 'personalizado':
-                        producto.total = producto.producto_base.factor * producto.cantidad * producto.ancho * producto.alto
+                        producto.total = producto.producto_base.factor * \
+                            producto.cantidad * producto.ancho * producto.alto
                     producto.save()
                 return HttpResponseRedirect(reverse('recibidos-listar'))
     else:
@@ -244,7 +247,8 @@ def imprimirCierreMes(request, month, year):
 @login_required
 def imprimirCierreDia(request, day, month, year):
     domain = request.META['HTTP_HOST']
-    url = 'http://' + domain + '/ver-impreso-cierre-dia/' + day + '/' + month + '/' + year + '/'
+    url = 'http://' + domain + '/ver-impreso-cierre-dia/' + \
+        day + '/' + month + '/' + year + '/'
 
     pdf = pdfkit.from_url(url, False)
     response = HttpResponse(pdf, content_type='application/pdf')

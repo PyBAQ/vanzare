@@ -2,13 +2,14 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.forms import ModelForm
-from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import ModelForm, inlineformset_factory
 
-from .models import Gasto, Producto, ProductoBase
-from cliente.models import Recibido, Recaudo, Cliente
+from cliente.models import Cliente, Recaudo, Recibido
+from producto.models import Producto, ProductoBase
+
+from .models import Gasto
 
 
 class RecibidoForm(ModelForm):
