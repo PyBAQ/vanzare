@@ -10,6 +10,7 @@ https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-bui
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from api.router_v1 import router
 
 urlpatterns = [
     url(r'^accounts/login/$', auth_views.login, name='login'),
@@ -21,4 +22,5 @@ urlpatterns = [
     url(r'^', include('facturacion.urls')),
     url(r'^', include('producto.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^api/v1/', include(router.urls)),
 ]
