@@ -1,30 +1,28 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import pdfkit
 from datetime import date
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect, HttpResponse
-from django.db.models import Sum
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate
-from django.urls import reverse
+from django.core.urlresolvers import reverse
+from django.db.models import Sum
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 
-from facturacion.forms import RecibidoForm, GastoForm, ProductoFormSet, RecaudoForm, ClienteForm, ProductoBaseForm, RegistroForm
-from facturacion.models import Recibido, Gasto, Recaudo, Cliente
+import pdfkit
+from cliente.models import Cliente, Recaudo, Recibido
+from facturacion.forms import (ClienteForm, GastoForm, ProductoBaseForm, ProductoFormSet, RecaudoForm, RecibidoForm,
+                               RegistroForm)
 from producto.models import Producto, ProductoBase
 
-from templated_docs import fill_template
-from templated_docs.http import FileResponse
-
+from .models import Gasto
 
 today = date.today()
 
+
 @login_required
 def index(request):
-    recibidos = Recibido.objects.all().filter(fecha__date = today)
+    recibidos = Recibido.objects.all().filter(fecha__date=today)
     gastos = Gasto.objects.all().filter(fecha__date=today)
     total_recibidos = recibidos.aggregate(suma=Sum('saldo'))
     total_gastos = gastos.aggregate(suma=Sum('valor'))
@@ -36,6 +34,7 @@ def index(request):
     }
     return render(request, 'facturacion/index.html', context)
 
+
 @login_required
 def recibidosFacturar(request):
     productos = ProductoBase.objects.all()
@@ -44,24 +43,38 @@ def recibidosFacturar(request):
         subtotal = 0
         if formulario.is_valid():
             formulario_guardado = formulario.save(commit=False)
-            producto_formset = ProductoFormSet(request.POST, instance=formulario_guardado)
+            producto_formset = ProductoFormSet(
+                request.POST, instance=formulario_guardado)
 
             if producto_formset.is_valid():
                 for form in producto_formset:
                     # Se tiene en cuenta si la opcion de cobro es estandar/por_docena o personalizado
-                    if form.cleaned_data['producto_base'].opciones_cobro == 'estandar' or form.cleaned_data['producto_base'].opciones_cobro == 'por_docena':
-                        if form.cleaned_data['producto_base'].valor_cantidad and form.cleaned_data['cantidad'] != 1:
-                            subtotal+= form.cleaned_data['producto_base'].valor_cantidad * form.cleaned_data['cantidad']
+                    if form.cleaned_data[
+                            'producto_base'].opciones_cobro == 'estandar' or form.cleaned_data[
+                                'producto_base'].opciones_cobro == 'por_docena':
+                        if form.cleaned_data[
+                                'producto_base'].valor_cantidad and form.cleaned_data[
+                                    'cantidad'] != 1:
+                            subtotal += form.cleaned_data[
+                                'producto_base'].valor_cantidad * form.cleaned_data[
+                                    'cantidad']
                         else:
-                            subtotal+= form.cleaned_data['producto_base'].valor * form.cleaned_data['cantidad']
-                    elif form.cleaned_data['producto_base'].opciones_cobro == 'personalizado':
-                        subtotal+= form.cleaned_data['producto_base'].factor * form.cleaned_data['cantidad'] * form.cleaned_data['ancho'] * form.cleaned_data['alto']
+                            subtotal += form.cleaned_data[
+                                'producto_base'].valor * form.cleaned_data[
+                                    'cantidad']
+                    elif form.cleaned_data[
+                            'producto_base'].opciones_cobro == 'personalizado':
+                        subtotal += form.cleaned_data[
+                            'producto_base'].factor * form.cleaned_data[
+                                'cantidad'] * form.cleaned_data[
+                                    'ancho'] * form.cleaned_data['alto']
 
                 formulario_guardado.subtotal = subtotal
                 formulario_guardado.saldo = subtotal - formulario_guardado.abono
 
                 if formulario_guardado.abono != formulario_guardado.subtotal:
-                    formulario_guardado.total = formulario_guardado.saldo - (subtotal * formulario_guardado.descuento/100)
+                    formulario_guardado.total = formulario_guardado.saldo - (
+                        subtotal * formulario_guardado.descuento / 100)
                 else:
                     formulario_guardado.total = formulario_guardado.subtotal
 
@@ -81,7 +94,8 @@ def recibidosFacturar(request):
                         else:
                             producto.total = producto.producto_base.valor * producto.cantidad
                     elif producto.producto_base.opciones_cobro == 'personalizado':
-                        producto.total = producto.producto_base.factor * producto.cantidad * producto.ancho * producto.alto
+                        producto.total = producto.producto_base.factor * \
+                            producto.cantidad * producto.ancho * producto.alto
                     producto.save()
                 return HttpResponseRedirect(reverse('recibidos-listar'))
     else:
@@ -90,9 +104,10 @@ def recibidosFacturar(request):
     informacion = {
         'formulario': formulario,
         'formset': producto_formset,
-        'productos':productos,
+        'productos': productos,
     }
     return render(request, "facturacion/recibidos/facturar.html", informacion)
+
 
 @login_required
 def gastos(request):
@@ -110,6 +125,7 @@ def gastos(request):
     }
     return render(request, "facturacion/parciales/crear.html", informacion)
 
+
 @login_required
 def recibidosListar(request):
     recibidos = Recibido.objects.all().order_by('-id')
@@ -121,16 +137,19 @@ def recibidosListar(request):
     }
     return render(request, 'facturacion/recibidos/listar.html', context)
 
+
 @login_required
 def imprimirFactura(request, pk):
 
-    domain =request.META['HTTP_HOST']
-    url = 'http://'+domain+'/factura/'+pk
+    domain = request.META['HTTP_HOST']
+    url = 'http://' + domain + '/factura/' + pk
 
     pdf = pdfkit.from_url(url, False)
-    response = HttpResponse(pdf,content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="factura_'+pk+'.pdf"'
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response[
+        'Content-Disposition'] = 'attachment; filename="factura_' + pk + '.pdf"'
     return response
+
 
 @login_required
 def factura(request, pk):
@@ -142,7 +161,7 @@ def factura(request, pk):
         'tipo_id': str(recibido.cliente.tipo_identificacion),
         'id_cliente': str(recibido.cliente.numero_identificacion),
         'abono': str(recibido.abono),
-        'subtotal':str(recibido.subtotal),
+        'subtotal': str(recibido.subtotal),
         'total': str(recibido.total),
         'descuento': str(recibido.descuento),
         'saldo': str(recibido.saldo),
@@ -154,15 +173,20 @@ def factura(request, pk):
     }
     return render(request, "facturacion/impresos/factura.html", factura)
 
+
 @login_required
 def escogerCierre(request):
     return render(request, "facturacion/escoger/cierre.html")
 
+
 @login_required
 def cierreDia(request, day, month, year):
-    recibidos = Recibido.objects.filter(fecha__year =year, fecha__month=month, fecha__day =day)
-    recaudos = Recaudo.objects.filter(fecha__year =year, fecha__month=month, fecha__day =day)
-    gastos = Gasto.objects.all().filter(fecha__year =year, fecha__month=month, fecha__day =day)
+    recibidos = Recibido.objects.filter(
+        fecha__year=year, fecha__month=month, fecha__day=day)
+    recaudos = Recaudo.objects.filter(
+        fecha__year=year, fecha__month=month, fecha__day=day)
+    gastos = Gasto.objects.all().filter(
+        fecha__year=year, fecha__month=month, fecha__day=day)
     context = {
         'recibidos': recibidos,
         'mes': month,
@@ -176,8 +200,8 @@ def cierreDia(request, day, month, year):
 
 @login_required
 def cierreMes(request, month, year):
-    recibidos = Recibido.objects.filter(fecha__year =year, fecha__month=month)
-    gastos = Gasto.objects.filter(fecha__year =year, fecha__month=month)
+    recibidos = Recibido.objects.filter(fecha__year=year, fecha__month=month)
+    gastos = Gasto.objects.filter(fecha__year=year, fecha__month=month)
     total_recibidos = recibidos.aggregate(suma=Sum('total'))
     total_gastos = gastos.aggregate(suma=Sum('valor'))
     context = {
@@ -185,15 +209,16 @@ def cierreMes(request, month, year):
         'gastos': gastos,
         'mes': month,
         'anio': year,
-        'total_recibidos':total_recibidos['suma'],
-        'total_gastos':total_gastos['suma'],
+        'total_recibidos': total_recibidos['suma'],
+        'total_gastos': total_gastos['suma'],
     }
     return render(request, "facturacion/cierres/mes.html", context)
 
+
 @login_required
 def verImpresoCierreMes(request, month, year):
-    recibidos = Recibido.objects.filter(fecha__year =year, fecha__month=month)
-    gastos = Gasto.objects.filter(fecha__year =year, fecha__month=month)
+    recibidos = Recibido.objects.filter(fecha__year=year, fecha__month=month)
+    gastos = Gasto.objects.filter(fecha__year=year, fecha__month=month)
     recibos_de_caja = recibidos.aggregate(suma=Sum('total'))
     total_gastos = gastos.aggregate(suma=Sum('valor'))
 
@@ -206,31 +231,41 @@ def verImpresoCierreMes(request, month, year):
     }
     return render(request, "facturacion/impresos/cierre-mes.html", cierre_mes)
 
+
 @login_required
 def imprimirCierreMes(request, month, year):
-    domain =request.META['HTTP_HOST']
-    url = 'http://'+domain+'/ver-impreso-cierre-mes/'+month+'/'+year+'/'
+    domain = request.META['HTTP_HOST']
+    url = 'http://' + domain + '/ver-impreso-cierre-mes/' + month + '/' + year + '/'
 
     pdf = pdfkit.from_url(url, False)
-    response = HttpResponse(pdf,content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="cierre_mes'+month+'.pdf"'
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response[
+        'Content-Disposition'] = 'attachment; filename="cierre_mes' + month + '.pdf"'
     return response
+
 
 @login_required
 def imprimirCierreDia(request, day, month, year):
-    domain =request.META['HTTP_HOST']
-    url = 'http://'+domain+'/ver-impreso-cierre-dia/'+day+'/'+month+'/'+year+'/'
+    domain = request.META['HTTP_HOST']
+    url = 'http://' + domain + '/ver-impreso-cierre-dia/' + \
+        day + '/' + month + '/' + year + '/'
 
     pdf = pdfkit.from_url(url, False)
-    response = HttpResponse(pdf,content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="cierre_'+day+'_'+month+'_'+year+'.pdf"'
+    response = HttpResponse(pdf, content_type='application/pdf')
+    filename = f"cierre_' + {day} + '_' + {month} + '_' + {year} + '.pdf"
+    response['Content-Disposition'] = 'attachment; filename=""'.format(
+        filename)
     return response
+
 
 @login_required
 def verImpresoCierreDia(request, day, month, year):
-    recibidos = Recibido.objects.filter(fecha__year =year, fecha__month=month, fecha__day =day)
-    recaudos = Recaudo.objects.filter(fecha__year =year, fecha__month=month, fecha__day =day)
-    gastos = Gasto.objects.all().filter(fecha__year =year, fecha__month=month, fecha__day =day)
+    recibidos = Recibido.objects.filter(
+        fecha__year=year, fecha__month=month, fecha__day=day)
+    recaudos = Recaudo.objects.filter(
+        fecha__year=year, fecha__month=month, fecha__day=day)
+    gastos = Gasto.objects.all().filter(
+        fecha__year=year, fecha__month=month, fecha__day=day)
     total_recibidos = recibidos.aggregate(suma=Sum('subtotal'))
     total_recaudos = recaudos.aggregate(suma=Sum('valor'))
     total_efectivo = total_recibidos['suma'] + total_recaudos['suma']
@@ -249,6 +284,7 @@ def verImpresoCierreDia(request, day, month, year):
     }
     return render(request, "facturacion/impresos/cierre-dia.html", cierre_dia)
 
+
 @login_required
 def escogerRecaudo(request):
     if request.method == 'POST':
@@ -263,6 +299,7 @@ def escogerRecaudo(request):
     }
     return render(request, "facturacion/escoger/recaudo.html", informacion)
 
+
 @login_required
 def recaudo(request, pk):
     recibido = get_object_or_404(Recibido, pk=pk)
@@ -272,12 +309,16 @@ def recaudo(request, pk):
             formulario.save()
             return HttpResponseRedirect(reverse('recaudos-listar'))
     else:
-        formulario = RecaudoForm(initial={'valor': recibido.saldo, 'recibido': recibido.pk})
+        formulario = RecaudoForm(initial={
+            'valor': recibido.saldo,
+            'recibido': recibido.pk
+        })
     informacion = {
         'formulario': formulario,
         'recibido': recibido,
     }
     return render(request, "facturacion/recaudos/recaudo.html", informacion)
+
 
 @login_required
 def verImpresoRecaudo(request, pk):
@@ -289,15 +330,18 @@ def verImpresoRecaudo(request, pk):
     }
     return render(request, "facturacion/impresos/recaudo.html", informacion)
 
+
 @login_required
 def imprimirRecaudo(request, pk):
-    domain =request.META['HTTP_HOST']
-    url = 'http://'+domain+'/ver-impreso-recaudo/'+pk+'/'
+    domain = request.META['HTTP_HOST']
+    url = 'http://' + domain + '/ver-impreso-recaudo/' + pk + '/'
 
     pdf = pdfkit.from_url(url, False)
-    response = HttpResponse(pdf,content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="recaudo_'+pk+'_'+'.pdf"'
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response[
+        'Content-Disposition'] = 'attachment; filename="recaudo_' + pk + '_' + '.pdf"'
     return response
+
 
 @login_required
 def recaudosListar(request):
@@ -307,6 +351,7 @@ def recaudosListar(request):
     }
     return render(request, 'facturacion/recaudos/listar.html', context)
 
+
 @login_required
 def clientesListar(request):
     clientes = Cliente.objects.all().order_by('-id')
@@ -315,6 +360,7 @@ def clientesListar(request):
     }
     return render(request, 'facturacion/clientes/listar.html', context)
 
+
 @login_required
 def productosListar(request):
     productos = ProductoBase.objects.all().order_by('-id')
@@ -322,6 +368,7 @@ def productosListar(request):
         'productos': productos,
     }
     return render(request, 'facturacion/productos-base/listar.html', context)
+
 
 @login_required
 def clientesCrear(request):
@@ -339,6 +386,7 @@ def clientesCrear(request):
     }
     return render(request, "facturacion/parciales/crear.html", informacion)
 
+
 @login_required
 def productosCrear(request):
     titulo = "Productos"
@@ -354,6 +402,7 @@ def productosCrear(request):
         'titulo': titulo,
     }
     return render(request, "facturacion/parciales/crear.html", informacion)
+
 
 @login_required
 def productosEditar(request, pk):
@@ -372,6 +421,7 @@ def productosEditar(request, pk):
     }
     return render(request, "facturacion/parciales/crear.html", informacion)
 
+
 @login_required
 def clientesEditar(request, pk):
     titulo = "Clientes"
@@ -388,6 +438,7 @@ def clientesEditar(request, pk):
         'titulo': titulo,
     }
     return render(request, "facturacion/parciales/crear.html", informacion)
+
 
 def registroUsuario(request):
     if request.method == 'POST':

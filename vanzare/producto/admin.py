@@ -10,5 +10,13 @@ class ProductoInLine(admin.StackedInline):
 
 @admin.register(ProductoBase)
 class ProductoBaseAdmin(admin.ModelAdmin):
-    list_display = ('nombre','valor', 'valor_cantidad','factor', 'opciones_cobro', 'fecha','modificado')
+    list_display = (
+        'nombre',
+        'valor',
+        'valor_cantidad',
+        'factor',
+        'opciones_cobro',
+        'fecha',
+        'modificado'
+        )
 

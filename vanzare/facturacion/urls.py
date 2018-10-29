@@ -21,8 +21,5 @@ urlpatterns = [
     url(r'^ver-impreso-recaudo/(?P<pk>\d+)/', views.verImpresoRecaudo, name='ver-impreso-recaudo'),
     url(r'^escoger-recaudo', views.escogerRecaudo, name='escoger-recaudo'),
     url(r'^recaudos/listar/$', views.recaudosListar, name='recaudos-listar'),
-    url(r'^clientes/listar/$', views.clientesListar, name='clientes-listar'),
-    url(r'^clientes/crear/$', views.clientesCrear, name='clientes-crear'),
-    url(r'^clientes/editar/(?P<pk>[0-9]+)/$', views.clientesEditar, name='clientes-editar'),
     url(r'^troregis/$', views.registroUsuario, name='registro'),
 ]

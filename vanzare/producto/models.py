@@ -1,5 +1,5 @@
 from django.db import models
-from facturacion.models import Recibido
+from cliente.models import Recibido
 
 
 class ProductoBase(models.Model):

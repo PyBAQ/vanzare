@@ -1,3 +1,4 @@
+
 """
 Django settings for contabilidad project.
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'producto',
+    'cliente',
 ]
 
 MIDDLEWARE = [
@@ -143,6 +145,7 @@ LOGIN_REDIRECT_URL = 'index'
 
 # Find out what the IP addresses are at run time
 # This is necessary because otherwise Gunicorn will reject the connections
+
 def ip_addresses():
     ip_list = []
     for interface in netifaces.interfaces():
