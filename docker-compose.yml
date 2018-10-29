@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  db-service:
-    image: postgres:9.6-alpine
+#   db-service:
+#     image: postgres:9.6-alpine
   app-service:
     build: vanzare/
     command: python3 manage.py runserver 0.0.0.0:8000
@@ -11,5 +11,5 @@ services:
     - ./vanzare:/code
     ports:
       - "8000:8000"
-    depends_on:
-      - db-service
+    # depends_on:
+    #   - db-service
