@@ -7,4 +7,4 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - python vanzare/manage.py test -v 2
+  - cd vanzare &&  python manage.py test -v 2
