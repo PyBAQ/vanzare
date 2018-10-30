@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.contrib import admin
 from .models import Producto, ProductoBase
 
@@ -7,6 +5,7 @@ from .models import Producto, ProductoBase
 class ProductoInLine(admin.StackedInline):
     model = Producto
     extra = 0
+
 
 @admin.register(ProductoBase)
 class ProductoBaseAdmin(admin.ModelAdmin):
@@ -20,3 +19,7 @@ class ProductoBaseAdmin(admin.ModelAdmin):
         'modificado'
         )
 
+
+@admin.register(Producto)
+class ProductoAdmin(admin.ModelAdmin):
+    pass

@@ -1,0 +1,56 @@
+[{
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$36000$7IIT5qjswj3F$U+TBexLzpuMu+J366EOooHCqy4aPjeEhixIqOKhC3dI=",
+      "last_login": "2018-10-30T00:14:39.145Z",
+      "is_superuser": true,
+      "username": "User1",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2018-10-30T00:13:50.199Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "cliente.cliente",
+    "pk": 1,
+    "fields": {
+      "nombre_completo": "Demo Cliente",
+      "tipo_identificacion": "cedula",
+      "numero_identificacion": "1111111",
+      "fecha": "2018-10-29T23:55:57.939Z",
+      "modificado": "2018-10-29T23:55:57.939Z"
+    }
+  },
+  {
+    "model": "cliente.recibido",
+    "pk": 1,
+    "fields": {
+      "cliente": 1,
+      "descuento": 1,
+      "abono": 0,
+      "saldo": 0,
+      "subtotal": 0,
+      "total": 0,
+      "fecha": "2018-10-29T23:56:06.187Z",
+      "modificado": "2018-10-29T23:56:06.187Z",
+      "recaudado": false
+    }
+  },
+  {
+    "model": "cliente.perfil",
+    "pk": 1,
+    "fields": {
+      "usuario": 1,
+      "biografia": "",
+      "ubicacion": "",
+      "fecha_de_nacimiento": null,
+      "confirmar_email": false
+    }
+  }
+]
