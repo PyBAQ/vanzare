@@ -1,0 +1,29 @@
+[{
+    "model": "producto.productobase",
+    "pk": 1,
+    "fields": {
+      "nombre": "Producto Demo",
+      "valor": 100,
+      "valor_cantidad": 1,
+      "factor": null,
+      "especificacion": null,
+      "fecha": "2018-10-29T23:50:49.517Z",
+      "modificado": "2018-10-29T23:50:49.517Z",
+      "opciones_cobro": "estandar"
+    }
+  },
+  {
+    "model": "producto.producto",
+    "pk": 1,
+    "fields": {
+      "recibido": 1,
+      "producto_base": 1,
+      "cantidad": 1,
+      "detalle": "",
+      "fecha": "2018-10-29T23:56:13.772Z",
+      "total": 0,
+      "ancho": null,
+      "alto": null
+    }
+  }
+]
