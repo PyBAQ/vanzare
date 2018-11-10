@@ -19,15 +19,15 @@ Despues de clonar el repo usar el siguiente comando `git submodule update --recu
 
 ### To dos:
 
-- Dividir settings (base, prod y dev)
+- ~~Dividir settings (base, prod y dev)~~
 - Ordenar views (pasar a class base views las necesarias)
 - Unit testing
 - ~~Dividir requirements (base, prod y dev)~~
 - ~~Instalar django-debug-toolbar~~
 - Optimizar queries
-- Ordernar apps (dividir la logica para que 1 app haga solo 1 cosa)
-- Migrar a Python 3
-- Configurar DockerFile
+- ~~Ordernar apps (dividir la logica para que 1 app haga solo 1 cosa)~~
+- ~~Migrar a Python 3~~
+- ~~Configurar DockerFile~~
 - Subir una demo a Heroku
 - Documentación
 - Guiarse del proyecto [django-cookiecutter](https://github.com/pydanny/cookiecutter-django)
