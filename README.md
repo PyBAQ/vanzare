@@ -1,3 +1,5 @@
+*Este proyecto ha sido archivado. Le daremos prioridad a los proyectos que tienen más movimiento y utilidad para la comunidad. Agradecemos mucho a las personas que mostraron interés.*
+
 # Vanzare: Software de Punto de Venta
 
 
